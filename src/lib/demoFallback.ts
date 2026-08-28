@@ -25,13 +25,14 @@ function write(records: AssetRecord[]) {
 function update(assetId: string, patch: Partial<AssetRecord>): TransactionResult {
   const records = read();
   const index = records.findIndex((r) => r.assetId === assetId);
-  if (index === -1) {
+  const current = index === -1 ? undefined : records[index];
+  if (!current) {
     return { ok: false, source: "demo", recordId: assetId, error: "Asset not found" };
   }
-  if (records[index].ownershipStatus === "revoked") {
+  if (current.ownershipStatus === "revoked") {
     return { ok: false, source: "demo", recordId: assetId, error: "Asset is revoked" };
   }
-  records[index] = { ...records[index], ...patch };
+  records[index] = { ...current, ...patch };
   write(records);
   // No txId is ever produced in demo mode — nothing was committed to Midnight.
   return { ok: true, source: "demo", recordId: assetId };

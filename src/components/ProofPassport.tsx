@@ -10,7 +10,7 @@ export function ProofPassport({
 }: {
   asset: AssetRecord;
   isLive: boolean;
-  txId?: string;
+  txId?: string | undefined;
 }) {
   const [copied, setCopied] = useState(false);
   const [selected, setSelected] = useState<DisclosureField[]>(

@@ -23,8 +23,8 @@ export type ProofPhase =
 
 export type ProofProgress = {
   phase: ProofPhase;
-  message?: string;
-  result?: TransactionResult;
+  message?: string | undefined;
+  result?: TransactionResult | undefined;
 };
 
 export function useRightsVault(wallet: unknown, walletConnected: boolean) {
