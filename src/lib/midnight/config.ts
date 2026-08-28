@@ -2,13 +2,13 @@ export type NetworkId = "preview" | "preprod" | "undeployed" | "mainnet";
 
 const env = import.meta.env;
 
-export const NETWORK_ID = ((env.VITE_NETWORK_ID as string) ?? "preview") as NetworkId;
-export const INDEXER_URL = (env.VITE_INDEXER_URL as string) ?? "";
-export const INDEXER_WS_URL = (env.VITE_INDEXER_WS_URL as string) ?? "";
+export const NETWORK_ID = ((env["VITE_NETWORK_ID"] as string) ?? "preview") as NetworkId;
+export const INDEXER_URL = (env["VITE_INDEXER_URL"] as string) ?? "";
+export const INDEXER_WS_URL = (env["VITE_INDEXER_WS_URL"] as string) ?? "";
 export const PROOF_SERVER_URL =
-  (env.VITE_PROOF_SERVER_URL as string) ?? "http://localhost:6300";
-export const CONTRACT_ADDRESS = (env.VITE_DEFAULT_CONTRACT as string) ?? "";
-export const EXPLORER_URL = (env.VITE_EXPLORER_URL as string) ?? "";
+  (env["VITE_PROOF_SERVER_URL"] as string) ?? "http://localhost:6300";
+export const CONTRACT_ADDRESS = (env["VITE_DEFAULT_CONTRACT"] as string) ?? "";
+export const EXPLORER_URL = (env["VITE_EXPLORER_URL"] as string) ?? "";
 
 export const NETWORK_LABEL: Record<NetworkId, string> = {
   preview: "Midnight Preview",

@@ -57,7 +57,7 @@ export function useMidnightWallet() {
 
     const check = () => {
       attempts += 1;
-      const lace = window.midnight?.mnLace;
+      const lace = window.midnight?.["mnLace"];
       if (lace) {
         if (pollRef.current) clearInterval(pollRef.current);
         if (!cancelled) {
@@ -88,7 +88,7 @@ export function useMidnightWallet() {
   }, []);
 
   const connect = useCallback(async () => {
-    const lace = window.midnight?.mnLace;
+    const lace = window.midnight?.["mnLace"];
     if (!lace) {
       setState((s) => ({ ...s, status: "unavailable" }));
       return;
