@@ -1,0 +1,85 @@
+pragma language_version 0.23;
+
+import CompactStandardLibrary;
+
+// NextPlay Rights Vault — one shared record per career asset.
+// Public ledger holds only what a verifier needs. Legal identity, contract
+// text, payment amounts and collaborator identities stay off-chain.
+
+// Status: 0 = none, 1 = active (ownership proof live), 2 = revoked.
+export ledger assetCount: Counter;
+export ledger assetExists: Map<Bytes<32>, Boolean>;
+export ledger assetOwnerCommitment: Map<Bytes<32>, Bytes<32>>;
+export ledger assetContentHash: Map<Bytes<32>, Bytes<32>>;
+export ledger assetMetadata: Map<Bytes<32>, Bytes<32>>;
+export ledger assetStatus: Map<Bytes<32>, Uint<8>>;
+export ledger assetSequence: Map<Bytes<32>, Uint<64>>;
+export ledger licenseAvailable: Map<Bytes<32>, Boolean>;
+export ledger licenseTermsCommitment: Map<Bytes<32>, Bytes<32>>;
+export ledger royaltySplitCommitment: Map<Bytes<32>, Bytes<32>>;
+
+// Private witness: the athlete's secret. Never written to the ledger; only a
+// commitment derived from it is public.
+witness ownerSecret(): Bytes<32>;
+
+circuit ownerCommitment(assetId: Bytes<32>): Bytes<32> {
+  return persistent_hash<Vector<2, Bytes<32>>>([ownerSecret(), assetId]);
+}
+
+circuit requireOwner(assetId: Bytes<32>): [] {
+  assert(assetExists.member(assetId), "asset not registered");
+  assert(
+    assetOwnerCommitment.lookup(assetId) == ownerCommitment(assetId),
+    "not the registered owner"
+  );
+  assert(assetStatus.lookup(assetId) != 2, "asset revoked");
+}
+
+export circuit registerAsset(
+  assetId: Bytes<32>,
+  contentHash: Bytes<32>,
+  metadataCommitment: Bytes<32>,
+  available: Boolean
+): [] {
+  assert(!assetExists.member(assetId), "asset already registered");
+  assetCount.increment(1);
+  assetExists.insert(assetId, true);
+  assetOwnerCommitment.insert(assetId, ownerCommitment(assetId));
+  assetContentHash.insert(assetId, contentHash);
+  assetMetadata.insert(assetId, metadataCommitment);
+  assetStatus.insert(assetId, 1);
+  // Immutable registration sequence — never rewritten by later circuits.
+  assetSequence.insert(assetId, assetCount as Uint<64>);
+  licenseAvailable.insert(assetId, available);
+}
+
+export circuit setLicenseAvailability(assetId: Bytes<32>, available: Boolean): [] {
+  requireOwner(assetId);
+  licenseAvailable.insert(assetId, available);
+}
+
+export circuit commitLicenseTerms(assetId: Bytes<32>, termsCommitment: Bytes<32>): [] {
+  requireOwner(assetId);
+  licenseTermsCommitment.insert(assetId, termsCommitment);
+}
+
+export circuit commitRoyaltySplit(assetId: Bytes<32>, splitCommitment: Bytes<32>): [] {
+  requireOwner(assetId);
+  royaltySplitCommitment.insert(assetId, splitCommitment);
+}
+
+export circuit revokeAsset(assetId: Bytes<32>): [] {
+  requireOwner(assetId);
+  // Historical proof (owner commitment, content hash, sequence) is preserved;
+  // only future verification and licensing are switched off.
+  assetStatus.insert(assetId, 2);
+  licenseAvailable.insert(assetId, false);
+}
+
+// Minimum public status surface for the Proof Passport.
+export circuit verifyAssetStatus(assetId: Bytes<32>): [Boolean, Uint<8>, Boolean] {
+  const exists = assetExists.member(assetId);
+  const status = exists ? assetStatus.lookup(assetId) : 0 as Uint<8>;
+  const available = exists ? licenseAvailable.lookup(assetId) : false;
+  return [exists, status, available];
+}

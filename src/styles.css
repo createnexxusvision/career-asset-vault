@@ -26,7 +26,17 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --color-navy: var(--navy);
+  --color-nextplay: var(--nextplay);
+  --color-gold: var(--gold);
+  --color-emerald: var(--emerald);
+  --color-slateblue: var(--slateblue);
+  --color-champagne: var(--champagne);
+  --color-graphite: var(--graphite);
   --color-background: var(--background);
+
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -62,40 +72,51 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --radius: 0.75rem;
+
+  /* NextPlay brand palette */
+  --navy: oklch(0.16 0.028 265);        /* #080F1E */
+  --nextplay: oklch(0.24 0.055 262);    /* #0B1D3A */
+  --gold: oklch(0.82 0.16 82);          /* #FDB927 */
+  --emerald: oklch(0.53 0.1 165);       /* #1A7F5F */
+  --slateblue: oklch(0.53 0.04 255);    /* #506680 */
+  --champagne: oklch(0.97 0.01 95);     /* #F7F5EE */
+  --graphite: oklch(0.39 0 0);          /* #3E3E3E */
+
+  --background: var(--navy);
+  --foreground: var(--champagne);
+  --card: oklch(0.21 0.043 263);
+  --card-foreground: var(--champagne);
+  --popover: oklch(0.21 0.043 263);
+  --popover-foreground: var(--champagne);
+  --primary: var(--gold);
+  --primary-foreground: var(--navy);
+  --secondary: var(--nextplay);
+  --secondary-foreground: var(--champagne);
+  --muted: oklch(0.26 0.04 262);
+  --muted-foreground: oklch(0.72 0.03 255);
+  --accent: var(--emerald);
+  --accent-foreground: var(--champagne);
+  --destructive: oklch(0.58 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.34 0.035 260);
+  --input: oklch(0.3 0.035 260);
+  --ring: var(--gold);
+  --chart-1: var(--gold);
+  --chart-2: var(--emerald);
+  --chart-3: var(--slateblue);
+  --chart-4: oklch(0.72 0.09 200);
+  --chart-5: var(--champagne);
+  --sidebar: var(--nextplay);
+  --sidebar-foreground: var(--champagne);
+  --sidebar-primary: var(--gold);
+  --sidebar-primary-foreground: var(--navy);
+  --sidebar-accent: oklch(0.26 0.04 262);
+  --sidebar-accent-foreground: var(--champagne);
+  --sidebar-border: oklch(0.34 0.035 260);
+  --sidebar-ring: var(--gold);
 }
+
 
 .dark {
   --background: oklch(0.129 0.042 264.695);
@@ -140,5 +161,15 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
+
