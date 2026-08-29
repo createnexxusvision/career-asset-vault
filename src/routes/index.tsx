@@ -65,10 +65,12 @@ function App() {
     <>
       <header className="border-b border-border bg-[color-mix(in_oklch,var(--nextplay),transparent_35%)]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-5 py-4">
-          <a href="/" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-gold text-sm font-black text-navy">
-              NP
-            </span>
+          <a href="/" className="flex items-center gap-2.5">
+            <img
+              src={logoAsset.url}
+              alt="NextPlay Nexus logo"
+              className="h-10 w-10 rounded-lg object-cover"
+            />
             <span className="font-display text-lg font-bold tracking-tight">NextPlay Rights</span>
           </a>
 
