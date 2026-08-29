@@ -68,9 +68,9 @@ function App() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-5 py-4">
           <a href="/" className="flex items-center gap-2.5">
             <img
-              src={logoAsset.url}
+              src={logoMark}
               alt="NextPlay Nexus logo"
-              className="h-10 w-10 rounded-lg object-cover"
+              className="h-10 w-10 object-contain"
             />
             <span className="font-display text-lg font-bold tracking-tight">NextPlay Rights</span>
           </a>
