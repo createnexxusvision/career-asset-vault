@@ -6,7 +6,7 @@ import { ProofState } from "@/components/ProofState";
 import { VaultView } from "@/features/vault/VaultView";
 import { ProofView } from "@/features/proof/ProofView";
 import { RoyaltiesView } from "@/features/royalties/RoyaltiesView";
-import logoAsset from "@/assets/nextplay-mark.png.asset.json";
+import logoMark from "@/assets/nextplay-mark-transparent.png";
 import { useMidnightWallet } from "@/hooks/useMidnightWallet";
 import { useRightsVault } from "@/hooks/useRightsVault";
 
