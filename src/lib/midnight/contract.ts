@@ -5,7 +5,7 @@ import type {
   TransactionResult,
 } from "@/types/asset";
 import { CONTRACT_ADDRESS } from "./config";
-import { getProviders } from "./providers";
+import { getProviders, getPublicDataProvider } from "./providers";
 import { newAssetId } from "./commitments";
 
 /**
@@ -39,6 +39,7 @@ function writeMirror(mirror: Mirror) {
   window.localStorage.setItem(MIRROR_KEY, JSON.stringify(mirror));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- module shape is unknown until the Midnight SDK package is installed
 async function loadModule<T = any>(specifier: string): Promise<T> {
   return (await import(/* @vite-ignore */ specifier)) as T;
 }
@@ -47,7 +48,7 @@ async function getDeployed(wallet: unknown) {
   const providers = await getProviders(wallet);
   const [contracts, artefact] = await Promise.all([
     loadModule("@midnight-ntwrk/midnight-js-contracts"),
-    loadModule(`${window.location.origin}/contract/contract/index.cjs`),
+    loadModule(`${window.location.origin}/contract/contract/index.js`),
   ]);
 
   // The private witness never leaves the browser; only its commitment is public.
@@ -168,30 +169,22 @@ export function createMidnightService(wallet: unknown): RightsVaultService {
     },
 
     setLicenseAvailability(assetId, available) {
-      return call(
-        "setLicenseAvailability",
-        [assetIdBytes(assetId), available],
-        assetId,
-        { licensingStatus: available ? "available" : "unavailable" },
-      );
+      return call("setLicenseAvailability", [assetIdBytes(assetId), available], assetId, {
+        licensingStatus: available ? "available" : "unavailable",
+      });
     },
 
     commitLicenseTerms(assetId, commitment) {
-      return call(
-        "commitLicenseTerms",
-        [assetIdBytes(assetId), hexBytes(commitment)],
-        assetId,
-        { licenseTermsHash: commitment, licensingStatus: "licensed" },
-      );
+      return call("commitLicenseTerms", [assetIdBytes(assetId), hexBytes(commitment)], assetId, {
+        licenseTermsHash: commitment,
+        licensingStatus: "licensed",
+      });
     },
 
     commitRoyaltySplit(assetId, commitment) {
-      return call(
-        "commitRoyaltySplit",
-        [assetIdBytes(assetId), hexBytes(commitment)],
-        assetId,
-        { royaltySplitHash: commitment },
-      );
+      return call("commitRoyaltySplit", [assetIdBytes(assetId), hexBytes(commitment)], assetId, {
+        royaltySplitHash: commitment,
+      });
     },
 
     revokeAsset(assetId) {
@@ -213,4 +206,49 @@ export function createMidnightService(wallet: unknown): RightsVaultService {
 
 export function txIdsFor(assetId: string): string[] {
   return readMirror()[assetId]?.txIds ?? [];
+}
+
+export type OnChainAssetStatus = {
+  exists: boolean;
+  status: "none" | "active" | "revoked";
+  licenseAvailable: boolean;
+};
+
+const STATUS_LABEL: Record<number, OnChainAssetStatus["status"]> = {
+  0: "none",
+  1: "active",
+  2: "revoked",
+};
+
+/**
+ * Reads the public ledger directly — no wallet, no local mirror. This is what
+ * a stranger with only a link can check: does this asset exist, is the
+ * ownership proof still active, is it licensable. Nothing else is disclosed.
+ */
+export async function verifyAssetOnChain(assetId: string): Promise<OnChainAssetStatus | null> {
+  if (!CONTRACT_ADDRESS) return null;
+
+  const [artefact, dataProvider] = await Promise.all([
+    loadModule<{ ledger: (state: unknown) => Record<string, unknown> }>(
+      `${window.location.origin}/contract/contract/index.js`,
+    ),
+    getPublicDataProvider(),
+  ]);
+
+  const contractState = await dataProvider.queryContractState(CONTRACT_ADDRESS);
+  if (!contractState) return null;
+
+  const ledgerState = artefact.ledger(contractState.data) as {
+    assetExists: { member(key: Uint8Array): boolean };
+    assetStatus: { lookup(key: Uint8Array): bigint };
+    licenseAvailable: { lookup(key: Uint8Array): boolean };
+  };
+
+  const id = assetIdBytes(assetId);
+  const exists = ledgerState.assetExists.member(id);
+  if (!exists) return { exists: false, status: "none", licenseAvailable: false };
+
+  const status = STATUS_LABEL[Number(ledgerState.assetStatus.lookup(id))] ?? "none";
+  const licenseAvailable = ledgerState.licenseAvailable.lookup(id);
+  return { exists, status, licenseAvailable };
 }

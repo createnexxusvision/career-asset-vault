@@ -16,12 +16,7 @@ declare global {
 }
 
 export type WalletStatus =
-  | "detecting"
-  | "unavailable"
-  | "disconnected"
-  | "connecting"
-  | "connected"
-  | "error";
+  "detecting" | "unavailable" | "disconnected" | "connecting" | "connected" | "error";
 
 export type WalletState = {
   status: WalletStatus;

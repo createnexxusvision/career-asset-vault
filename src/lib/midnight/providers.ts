@@ -32,11 +32,12 @@ export async function getProviders(wallet: unknown): Promise<MidnightProviders> 
       throw new Error("Midnight endpoints are not configured");
     }
 
-    const [levelPrivateState, indexer, proof, zkConfig] = await Promise.all([
-      loadModule<any>("@midnight-ntwrk/midnight-js-level-private-state-provider"),
-      loadModule<any>("@midnight-ntwrk/midnight-js-indexer-public-data-provider"),
-      loadModule<any>("@midnight-ntwrk/midnight-js-http-client-proof-provider"),
-      loadModule<any>("@midnight-ntwrk/midnight-js-fetch-zk-config-provider"),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- module shape is unknown until the Midnight SDK packages are installed
+    const [levelPrivateState, indexer, proof, zkConfig] = await Promise.all<any>([
+      loadModule("@midnight-ntwrk/midnight-js-level-private-state-provider"),
+      loadModule("@midnight-ntwrk/midnight-js-indexer-public-data-provider"),
+      loadModule("@midnight-ntwrk/midnight-js-http-client-proof-provider"),
+      loadModule("@midnight-ntwrk/midnight-js-fetch-zk-config-provider"),
     ]);
 
     const connected = wallet as {
@@ -71,6 +72,34 @@ export async function getProviders(wallet: unknown): Promise<MidnightProviders> 
 
 export function resetProviders() {
   cached = null;
+}
+
+export type PublicDataProvider = {
+  queryContractState: (contractAddress: string) => Promise<{ data: unknown } | null>;
+};
+
+let cachedPublicDataProvider: Promise<PublicDataProvider> | null = null;
+
+/**
+ * Read-only, wallet-free access to the public ledger. Used to verify an asset
+ * from a shared link without connecting Lace — the whole point of a proof
+ * you can check without exposing anything.
+ */
+export function getPublicDataProvider(): Promise<PublicDataProvider> {
+  if (cachedPublicDataProvider) return cachedPublicDataProvider;
+
+  cachedPublicDataProvider = (async () => {
+    if (!INDEXER_URL || !INDEXER_WS_URL) {
+      throw new Error("Indexer endpoints are not configured");
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- module shape is unknown until the Midnight SDK package is installed
+    const indexer = await loadModule<any>(
+      "@midnight-ntwrk/midnight-js-indexer-public-data-provider",
+    );
+    return indexer.indexerPublicDataProvider(INDEXER_URL, INDEXER_WS_URL) as PublicDataProvider;
+  })();
+
+  return cachedPublicDataProvider;
 }
 
 export async function isProofServerUp(): Promise<boolean> {

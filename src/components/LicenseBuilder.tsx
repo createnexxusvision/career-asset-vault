@@ -44,7 +44,17 @@ export function LicenseBuilder({
       renewalOption,
       ...split,
     }),
-    [assetId, usageType, territory, duration, exclusivity, permittedUses, licenseFee, renewalOption, split],
+    [
+      assetId,
+      usageType,
+      territory,
+      duration,
+      exclusivity,
+      permittedUses,
+      licenseFee,
+      renewalOption,
+      split,
+    ],
   );
 
   useEffect(() => {
@@ -96,13 +106,25 @@ export function LicenseBuilder({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Usage type">
-            <input value={usageType} onChange={(e) => setUsageType(e.target.value)} className={inputClass} />
+            <input
+              value={usageType}
+              onChange={(e) => setUsageType(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Territory">
-            <input value={territory} onChange={(e) => setTerritory(e.target.value)} className={inputClass} />
+            <input
+              value={territory}
+              onChange={(e) => setTerritory(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Duration">
-            <input value={duration} onChange={(e) => setDuration(e.target.value)} className={inputClass} />
+            <input
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              className={inputClass}
+            />
           </Field>
           <Field label="Exclusivity">
             <select
@@ -164,7 +186,10 @@ export function LicenseBuilder({
         <Row label="Collaborators receive" value={`$${collaboratorsReceive.toLocaleString()}`} />
         <Row label="Ownership" value="Retained by the athlete" />
         <Row label="License duration" value={duration} />
-        <Row label="Renewal date" value={renewalOption ? renewal.toISOString().slice(0, 10) : "—"} />
+        <Row
+          label="Renewal date"
+          value={renewalOption ? renewal.toISOString().slice(0, 10) : "—"}
+        />
         <div>
           <p className="text-muted-foreground">License commitment preview</p>
           <p className="mt-1 break-all font-mono text-xs">{preview}</p>

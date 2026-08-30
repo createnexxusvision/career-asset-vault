@@ -72,9 +72,7 @@ export function useRightsVault(wallet: unknown, walletConnected: boolean) {
       if (service.source === "midnight") {
         setTimeout(
           () =>
-            setProgress((p) =>
-              p.phase === "proving" ? { ...p, phase: "awaiting-wallet" } : p,
-            ),
+            setProgress((p) => (p.phase === "proving" ? { ...p, phase: "awaiting-wallet" } : p)),
           2500,
         );
       }

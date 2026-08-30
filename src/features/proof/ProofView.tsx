@@ -1,14 +1,29 @@
 import { useEffect, useState } from "react";
 import type { AssetRecord } from "@/types/asset";
 import { ProofPassport } from "@/components/ProofPassport";
-import { txIdsFor } from "@/lib/midnight/contract";
+import { txIdsFor, verifyAssetOnChain, type OnChainAssetStatus } from "@/lib/midnight/contract";
 
 export function ProofView({ assets, isLive }: { assets: AssetRecord[]; isLive: boolean }) {
   const [assetId, setAssetId] = useState(assets[0]?.assetId ?? "");
+  const [onChainStatus, setOnChainStatus] = useState<OnChainAssetStatus | null>(null);
 
   useEffect(() => {
     if (!assets.some((a) => a.assetId === assetId) && assets[0]) setAssetId(assets[0].assetId);
   }, [assets, assetId]);
+
+  useEffect(() => {
+    if (!isLive || !assetId) {
+      setOnChainStatus(null);
+      return;
+    }
+    let cancelled = false;
+    void verifyAssetOnChain(assetId).then((result) => {
+      if (!cancelled) setOnChainStatus(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isLive, assetId]);
 
   const asset = assets.find((a) => a.assetId === assetId);
 
@@ -42,7 +57,12 @@ export function ProofView({ assets, isLive }: { assets: AssetRecord[]; isLive: b
         you are, what you signed, or what you were paid.
       </p>
 
-      <ProofPassport asset={asset} isLive={isLive} txId={txIdsFor(asset.assetId).at(-1)} />
+      <ProofPassport
+        asset={asset}
+        isLive={isLive}
+        txId={txIdsFor(asset.assetId).at(-1)}
+        onChainStatus={onChainStatus}
+      />
     </div>
   );
 }

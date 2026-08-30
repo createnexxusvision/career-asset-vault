@@ -18,7 +18,9 @@ console.log(`Network: ${NETWORK}\n`);
 
 try {
   const res = await fetch(`${PROOF_SERVER.replace(/\/$/, "")}/health`);
-  res.ok ? ok(`proof server reachable at ${PROOF_SERVER}`) : warn(`proof server responded ${res.status}`);
+  res.ok
+    ? ok(`proof server reachable at ${PROOF_SERVER}`)
+    : warn(`proof server responded ${res.status}`);
 } catch {
   warn(
     `proof server unreachable at ${PROOF_SERVER}\n  docker run -p 6300:6300 midnightntwrk/proof-server:<matrix-tag> midnight-proof-server -v`,

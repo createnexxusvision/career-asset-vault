@@ -61,8 +61,8 @@ export function VaultView({
 
       {assets.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center text-sm text-muted-foreground">
-          Nothing protected yet. Register your first career asset — a highlight, a phrase, a
-          design — and it becomes provable everywhere in NextPlay.
+          Nothing protected yet. Register your first career asset — a highlight, a phrase, a design
+          — and it becomes provable everywhere in NextPlay.
         </p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
@@ -84,9 +84,7 @@ export function VaultView({
 function Stat({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
-      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-2 text-3xl font-bold">{value}</p>
       {note && <p className="mt-1 text-[11px] font-semibold text-gold">{note}</p>}
     </div>

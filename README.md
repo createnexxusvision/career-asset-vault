@@ -92,15 +92,15 @@ switches it to live Midnight — no UI changes required.
 
 ## Environment variables
 
-| Variable | Required | Notes |
-| --- | --- | --- |
-| `VITE_NETWORK_ID` | yes | `preview` \| `preprod` \| `undeployed` \| `mainnet` |
-| `VITE_INDEXER_URL` | for live mode | GraphQL indexer endpoint |
-| `VITE_INDEXER_WS_URL` | for live mode | Indexer websocket endpoint |
-| `VITE_PROOF_SERVER_URL` | yes | Defaults to `http://localhost:6300` |
-| `VITE_DEFAULT_CONTRACT` | for live mode | Deployed `RightsVault` address |
-| `VITE_EXPLORER_URL` | optional | Enables explorer links |
-| `VITE_PINATA_JWT` | optional | Not required for the demo |
+| Variable                | Required      | Notes                                               |
+| ----------------------- | ------------- | --------------------------------------------------- |
+| `VITE_NETWORK_ID`       | yes           | `preview` \| `preprod` \| `undeployed` \| `mainnet` |
+| `VITE_INDEXER_URL`      | for live mode | GraphQL indexer endpoint                            |
+| `VITE_INDEXER_WS_URL`   | for live mode | Indexer websocket endpoint                          |
+| `VITE_PROOF_SERVER_URL` | yes           | Defaults to `http://localhost:6300`                 |
+| `VITE_DEFAULT_CONTRACT` | for live mode | Deployed `RightsVault` address                      |
+| `VITE_EXPLORER_URL`     | optional      | Enables explorer links                              |
+| `VITE_PINATA_JWT`       | optional      | Not required for the demo                           |
 
 Never put a wallet seed, mnemonic or private key in `.env`.
 

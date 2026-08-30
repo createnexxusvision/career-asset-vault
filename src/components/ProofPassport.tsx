@@ -2,36 +2,46 @@ import { useState } from "react";
 import type { AssetRecord, DisclosureField } from "@/types/asset";
 import { DISCLOSURE_FIELDS, DISCLOSURE_LABELS } from "@/types/asset";
 import { NETWORK_LABEL, NETWORK_ID, shorten } from "@/lib/midnight/config";
+import type { OnChainAssetStatus } from "@/lib/midnight/contract";
 
 export function ProofPassport({
   asset,
   isLive,
   txId,
+  onChainStatus,
 }: {
   asset: AssetRecord;
   isLive: boolean;
   txId?: string | undefined;
+  /** Fresh read of the public ledger for this asset — the actual source of truth when live. */
+  onChainStatus?: OnChainAssetStatus | null | undefined;
 }) {
   const [copied, setCopied] = useState(false);
   const [selected, setSelected] = useState<DisclosureField[]>(
     DISCLOSURE_FIELDS.filter((f) => asset.publicProofFields.includes(f)),
   );
 
-  const verified = Boolean(isLive && txId);
+  const verified = Boolean(
+    isLive && txId && onChainStatus?.exists && onChainStatus.status === "active",
+  );
   const link =
     typeof window !== "undefined"
       ? `${window.location.origin}/?verify=${asset.assetId}`
       : `/?verify=${asset.assetId}`;
 
+  const ownershipVerified = onChainStatus
+    ? onChainStatus.status === "active"
+    : asset.ownershipStatus === "verified";
+  const licenseAvailable = onChainStatus
+    ? onChainStatus.licenseAvailable
+    : asset.licensingStatus !== "unavailable";
+
   const rows: { field: DisclosureField; value: string }[] = [
     { field: "title", value: asset.title },
     { field: "assetType", value: asset.assetType },
     { field: "registrationDate", value: asset.createdAt },
-    { field: "ownershipVerified", value: asset.ownershipStatus === "verified" ? "Yes" : "Pending" },
-    {
-      field: "licenseAvailable",
-      value: asset.licensingStatus === "unavailable" ? "No" : "Yes",
-    },
+    { field: "ownershipVerified", value: ownershipVerified ? "Yes" : "Pending" },
+    { field: "licenseAvailable", value: licenseAvailable ? "Yes" : "No" },
     { field: "licenseActive", value: asset.licensingStatus === "licensed" ? "Yes" : "No" },
     { field: "creatorRole", value: "Athlete / creator" },
     { field: "collaboratorCount", value: String(asset.collaboratorCount) },
@@ -62,16 +72,14 @@ export function ProofPassport({
           ))}
         </div>
         <p className="mt-4 rounded-xl border border-border bg-secondary/60 p-3 text-xs text-muted-foreground">
-          Always private: legal identity, address, contact details, full contract, payment
-          amounts, wallet seed, private witness and collaborator identities.
+          Always private: legal identity, address, contact details, full contract, payment amounts,
+          wallet seed, private witness and collaborator identities.
         </p>
       </section>
 
       <section className="rounded-2xl border border-gold/40 bg-gradient-to-b from-[color-mix(in_oklch,var(--nextplay),transparent_20%)] to-card p-6">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">
-            NextPlay Rights
-          </p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">NextPlay Rights</p>
           <span
             className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
               verified
@@ -112,7 +120,9 @@ export function ProofPassport({
           )}
           <div className="flex justify-between gap-4">
             <dt className="text-muted-foreground">Generated</dt>
-            <dd className="text-xs">{new Date().toISOString().replace("T", " ").slice(0, 19)} UTC</dd>
+            <dd className="text-xs">
+              {new Date().toISOString().replace("T", " ").slice(0, 19)} UTC
+            </dd>
           </div>
         </dl>
 

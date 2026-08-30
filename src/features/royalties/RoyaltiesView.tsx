@@ -15,8 +15,8 @@ export function RoyaltiesView({
       <div>
         <h2 className="text-xl font-bold">Royalty Routes</h2>
         <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-          Build reusable licensing terms and payout instructions. You keep ownership — a brand
-          only gets the rights you grant, for the time you grant them.
+          Build reusable licensing terms and payout instructions. You keep ownership — a brand only
+          gets the rights you grant, for the time you grant them.
         </p>
       </div>
       <LicenseBuilder assets={assets} busy={busy} onSubmit={onSubmit} />

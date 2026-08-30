@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ExperimentalBanner } from "@/components/ExperimentalBanner";
 import { NetworkStatus } from "@/components/NetworkStatus";
 import { ProofState } from "@/components/ProofState";
+import { PublicVerifier } from "@/components/PublicVerifier";
 import { VaultView } from "@/features/vault/VaultView";
 import { ProofView } from "@/features/proof/ProofView";
 import { RoyaltiesView } from "@/features/royalties/RoyaltiesView";
@@ -61,17 +62,18 @@ function App() {
   const vault = useRightsVault(wallet.api, connected);
   const [tab, setTab] = useState<Tab>("vault");
   const busy = !["idle", "success", "error"].includes(vault.progress.phase);
+  const [verifyAssetId] = useState<string | null>(() =>
+    typeof window === "undefined"
+      ? null
+      : new URLSearchParams(window.location.search).get("verify"),
+  );
 
   return (
     <>
       <header className="border-b border-border bg-[color-mix(in_oklch,var(--nextplay),transparent_35%)]">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-5 py-4">
           <a href="/" className="flex items-center gap-2.5">
-            <img
-              src={logoMark}
-              alt="NextPlay Nexus logo"
-              className="h-10 w-10 object-contain"
-            />
+            <img src={logoMark} alt="NextPlay Nexus logo" className="h-10 w-10 object-contain" />
             <span className="font-display text-lg font-bold tracking-tight">NextPlay Rights</span>
           </a>
 
@@ -135,8 +137,8 @@ function App() {
             Your highlights fade. Your rights don't.
           </h1>
           <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-            Turn every photo, video, phrase, design and performance into a private, provable
-            career asset you can license now—and carry long after the final whistle.
+            Turn every photo, video, phrase, design and performance into a private, provable career
+            asset you can license now—and carry long after the final whistle.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button
@@ -154,10 +156,14 @@ function App() {
               Verify an Asset
             </button>
           </div>
-          {wallet.error && (
-            <p className="mt-4 text-sm text-destructive">{wallet.error}</p>
-          )}
+          {wallet.error && <p className="mt-4 text-sm text-destructive">{wallet.error}</p>}
         </section>
+
+        {verifyAssetId && (
+          <div className="mb-8">
+            <PublicVerifier assetId={verifyAssetId} />
+          </div>
+        )}
 
         {vault.progress.phase !== "idle" && (
           <div className="mb-8">
@@ -207,8 +213,8 @@ function Footer() {
           registration. An on-chain record does not resolve disputed ownership by itself.
         </p>
         <p>
-          Minor athletes may require a parent, guardian or authorized representative. NIL rules
-          vary by state, school, conference, league and governing body.
+          Minor athletes may require a parent, guardian or authorized representative. NIL rules vary
+          by state, school, conference, league and governing body.
         </p>
         <p>Royalty Routes does not process payments in this MVP.</p>
       </div>

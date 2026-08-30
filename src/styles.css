@@ -75,13 +75,13 @@
   --radius: 0.75rem;
 
   /* NextPlay brand palette */
-  --navy: oklch(0.16 0.028 265);        /* #080F1E */
-  --nextplay: oklch(0.24 0.055 262);    /* #0B1D3A */
-  --gold: oklch(0.82 0.16 82);          /* #FDB927 */
-  --emerald: oklch(0.53 0.1 165);       /* #1A7F5F */
-  --slateblue: oklch(0.53 0.04 255);    /* #506680 */
-  --champagne: oklch(0.97 0.01 95);     /* #F7F5EE */
-  --graphite: oklch(0.39 0 0);          /* #3E3E3E */
+  --navy: oklch(0.16 0.028 265); /* #080F1E */
+  --nextplay: oklch(0.24 0.055 262); /* #0B1D3A */
+  --gold: oklch(0.82 0.16 82); /* #FDB927 */
+  --emerald: oklch(0.53 0.1 165); /* #1A7F5F */
+  --slateblue: oklch(0.53 0.04 255); /* #506680 */
+  --champagne: oklch(0.97 0.01 95); /* #F7F5EE */
+  --graphite: oklch(0.39 0 0); /* #3E3E3E */
 
   --background: var(--navy);
   --foreground: var(--champagne);
@@ -116,7 +116,6 @@
   --sidebar-border: oklch(0.34 0.035 260);
   --sidebar-ring: var(--gold);
 }
-
 
 .dark {
   --background: oklch(0.129 0.042 264.695);
@@ -172,4 +171,3 @@
     letter-spacing: -0.02em;
   }
 }
-

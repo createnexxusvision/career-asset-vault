@@ -1,11 +1,4 @@
-export type AssetType =
-  | "photo"
-  | "video"
-  | "audio"
-  | "performance"
-  | "phrase"
-  | "design"
-  | "other";
+export type AssetType = "photo" | "video" | "audio" | "performance" | "phrase" | "design" | "other";
 
 export type OwnershipStatus = "pending" | "verified" | "revoked";
 export type LicensingStatus = "unavailable" | "available" | "licensed";

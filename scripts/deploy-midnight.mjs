@@ -64,9 +64,7 @@ async function main() {
   const rxjs = await load("rxjs");
   const walletSdk = await load("@midnight-ntwrk/wallet-sdk");
   const contracts = await load("@midnight-ntwrk/midnight-js-contracts");
-  const indexerProvider = await load(
-    "@midnight-ntwrk/midnight-js-indexer-public-data-provider",
-  );
+  const indexerProvider = await load("@midnight-ntwrk/midnight-js-indexer-public-data-provider");
   const proofProvider = await load("@midnight-ntwrk/midnight-js-http-client-proof-provider");
   const zkConfigProvider = await load("@midnight-ntwrk/midnight-js-node-zk-config-provider");
   const privateStateProvider = await load(

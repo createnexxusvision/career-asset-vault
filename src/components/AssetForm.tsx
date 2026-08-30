@@ -140,8 +140,8 @@ export function AssetForm({
       </div>
 
       <p className="rounded-xl border border-border bg-secondary/60 p-3 text-xs text-muted-foreground">
-        Your file never leaves this device. We create a SHA-256 fingerprint in your browser and
-        only that fingerprint is used for proof.
+        Your file never leaves this device. We create a SHA-256 fingerprint in your browser and only
+        that fingerprint is used for proof.
         {hashing && " Fingerprinting…"}
         {contentHash && (
           <>
